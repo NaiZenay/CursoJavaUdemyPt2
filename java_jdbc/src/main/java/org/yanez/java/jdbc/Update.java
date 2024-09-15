@@ -5,10 +5,11 @@ import org.yanez.java.jdbc.modelo.ProductRepository;
 import org.yanez.java.jdbc.repositorio.Repository;
 import org.yanez.java.jdbc.util.ConnectionDB;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 
-public class Main {
+public class Update {
     public static void main(String[] args) {
         try (Connection connection= ConnectionDB.getInstance()){
             Repository<Product> repository= new ProductRepository();
@@ -19,10 +20,10 @@ public class Main {
             System.out.println("========== get by id ==========");
             System.out.println(repository.byId(2L));
 
-            System.out.println("========== new Product ==========");
+            System.out.println("========== update Product ==========");
             Product product= new Product();
-            product.setNombre("Teclado mecanico");
-            product.setPrecio(5000);
+            product.setNombre("Split keyboard");
+            product.setPrecio(9000);
             product.setFecha_registro(new Date());
             repository.register(product);
             System.out.println("correctly registered");

@@ -49,8 +49,8 @@ public class ProductRepository implements Repository<Product> {
     public void register(Product product) {
         String sql;
 
-        if (product.getId() > 0 && product.getId() != null) {
-            sql = "UPDATE prodcutos SET nombre=?, precio=? WHERE id=?";
+        if (product.getId() != null && product.getId() > 0) {
+            sql = "UPDATE productos SET nombre=?, precio=? WHERE id=?";
         } else {
             sql = "INSERT INTO productos (nombre,precio,fecha_registro) VALUES(?,?,?)";
         }
@@ -58,7 +58,7 @@ public class ProductRepository implements Repository<Product> {
         try (PreparedStatement preparedStatement = getConncection().prepareStatement(sql)) {
             preparedStatement.setString(1, product.getNombre());
             preparedStatement.setLong(2, product.getPrecio());
-            if (product.getId() > 0 && product.getId() != null) {
+            if (product.getId() != null && product.getId() > 0) {
                 preparedStatement.setLong(3, product.getId());
             } else {
                 preparedStatement.setDate(3, new Date(product.getFecha_registro().getTime()));
@@ -73,8 +73,8 @@ public class ProductRepository implements Repository<Product> {
 
     @Override
     public void delete(Long id) {
-        try (PreparedStatement preparedStatement = getConncection().prepareStatement("DELETE FROM productos EHre id=?")) {
-            preparedStatement.setLong(1,id);
+        try (PreparedStatement preparedStatement = getConncection().prepareStatement("DELETE FROM productos WHERE id=?")) {
+            preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
