@@ -1,5 +1,6 @@
 package org.yanez.java.jdbc;
 
+import org.yanez.java.jdbc.modelo.Category;
 import org.yanez.java.jdbc.modelo.Product;
 import org.yanez.java.jdbc.modelo.ProductRepository;
 import org.yanez.java.jdbc.repositorio.Repository;
@@ -21,9 +22,12 @@ public class Main {
 
             System.out.println("========== new Product ==========");
             Product product= new Product();
-            product.setNombre("Teclado mecanico");
-            product.setPrecio(5000);
+            product.setNombre("GPU RTX 4050");
+            product.setPrecio(50000);
             product.setFecha_registro(new Date());
+            Category category= new Category();
+            category.setId(3L);
+            product.setCategory(category);
             repository.register(product);
             System.out.println("correctly registered");
             repository.listAll().forEach(System.out::println);

@@ -6,7 +6,7 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 public class Product {
     @Getter
     @Setter
@@ -24,4 +24,16 @@ public class Product {
     @Setter
     private Date fecha_registro;
 
+    @Getter
+    @Setter
+    private Category category;
+
+    @Override
+    public String toString() {
+        return "Product: #"+id+
+                "\n | nombre: " + nombre +
+                " | precio: " + precio +
+                " | fecha_registro: " + fecha_registro +
+                " | category: " + category.getNombre()+" |\n";
+    }
 }

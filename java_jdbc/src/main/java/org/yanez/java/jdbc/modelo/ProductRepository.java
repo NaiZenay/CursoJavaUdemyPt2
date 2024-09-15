@@ -18,7 +18,8 @@ public class ProductRepository implements Repository<Product> {
         List<Product> products = new ArrayList<>();
         try (
                 Statement statement = getConncection().createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM productos")
+                ResultSet resultSet = statement.executeQuery("SELECT p.*,c.nombre as categoria  FROM productos as p" +
+                        " inner join categorias as c ON (p.categoria_id=c.id)")
         ) {
             while (resultSet.next()) {
                 Product product = mapProduct(resultSet);
@@ -34,7 +35,9 @@ public class ProductRepository implements Repository<Product> {
     @Override
     public Product byId(Long id) {
         Product product = null;
-        try (PreparedStatement preparedStatement = getConncection().prepareStatement("SELECT * FROM productos WHERE id =?")) {
+        try (PreparedStatement preparedStatement = getConncection().prepareStatement("SELECT p.*,c.nombre as categoria  FROM productos as p " +
+                "inner join categorias as c ON (p.categoria_id=c.id) WHERE p.id =?"))
+             {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
@@ -50,18 +53,19 @@ public class ProductRepository implements Repository<Product> {
         String sql;
 
         if (product.getId() != null && product.getId() > 0) {
-            sql = "UPDATE productos SET nombre=?, precio=? WHERE id=?";
+            sql = "UPDATE productos SET nombre=?, precio=?, categoria_id=?  WHERE id=?";
         } else {
-            sql = "INSERT INTO productos (nombre,precio,fecha_registro) VALUES(?,?,?)";
+            sql = "INSERT INTO productos (nombre,precio,categoria_id,fecha_registro) VALUES(?,?,?,?)";
         }
 
         try (PreparedStatement preparedStatement = getConncection().prepareStatement(sql)) {
             preparedStatement.setString(1, product.getNombre());
             preparedStatement.setLong(2, product.getPrecio());
+            preparedStatement.setLong(3, product.getCategory().getId());
             if (product.getId() != null && product.getId() > 0) {
-                preparedStatement.setLong(3, product.getId());
+                preparedStatement.setLong(4, product.getId());
             } else {
-                preparedStatement.setDate(3, new Date(product.getFecha_registro().getTime()));
+                preparedStatement.setDate(4, new Date(product.getFecha_registro().getTime()));
 
             }
             preparedStatement.executeUpdate();
@@ -87,6 +91,12 @@ public class ProductRepository implements Repository<Product> {
         product.setNombre(resultSet.getString("nombre"));
         product.setPrecio(resultSet.getInt("precio"));
         product.setFecha_registro(resultSet.getDate("fecha_registro"));
+
+        Category category=new Category();
+        category.setId(resultSet.getLong("categoria_id"));
+        category.setNombre(resultSet.getString("categoria"));
+
+        product.setCategory(category);
         return product;
     }
 }

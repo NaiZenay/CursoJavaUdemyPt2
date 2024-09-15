@@ -1,5 +1,6 @@
 package org.yanez.java.jdbc;
 
+import org.yanez.java.jdbc.modelo.Category;
 import org.yanez.java.jdbc.modelo.Product;
 import org.yanez.java.jdbc.modelo.ProductRepository;
 import org.yanez.java.jdbc.repositorio.Repository;
@@ -25,6 +26,9 @@ public class Update {
             product.setNombre("Split keyboard");
             product.setPrecio(9000);
             product.setFecha_registro(new Date());
+            Category category=new Category();
+            category.setId(7L);
+
             repository.register(product);
             System.out.println("correctly registered");
             repository.listAll().forEach(System.out::println);

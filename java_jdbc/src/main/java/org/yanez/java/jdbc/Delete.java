@@ -20,7 +20,7 @@ public class Delete {
             System.out.println(repository.byId(2L));
 
             System.out.println("========== delete Product ==========");
-            repository.delete(3L);
+            repository.delete(10L);
             System.out.println("correctly deleted");
             repository.listAll().forEach(System.out::println);
 
