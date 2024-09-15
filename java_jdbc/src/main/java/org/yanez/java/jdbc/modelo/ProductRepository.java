@@ -32,27 +32,53 @@ public class ProductRepository implements Repository<Product> {
     }
 
     @Override
-    public Product byId(Long id) throws SQLException {
+    public Product byId(Long id) {
         Product product = null;
         try (PreparedStatement preparedStatement = getConncection().prepareStatement("SELECT * FROM productos WHERE id =?")) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
-                product=mapProduct(resultSet);
+                product = mapProduct(resultSet);
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return product;
     }
 
     @Override
     public void register(Product product) {
+        String sql;
 
+        if (product.getId() > 0 && product.getId() != null) {
+            sql = "UPDATE prodcutos SET nombre=?, precio=? WHERE id=?";
+        } else {
+            sql = "INSERT INTO productos (nombre,precio,fecha_registro) VALUES(?,?,?)";
+        }
+
+        try (PreparedStatement preparedStatement = getConncection().prepareStatement(sql)) {
+            preparedStatement.setString(1, product.getNombre());
+            preparedStatement.setLong(2, product.getPrecio());
+            if (product.getId() > 0 && product.getId() != null) {
+                preparedStatement.setLong(3, product.getId());
+            } else {
+                preparedStatement.setDate(3, new Date(product.getFecha_registro().getTime()));
+
+            }
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void delete(Long id) {
-
+        try (PreparedStatement preparedStatement = getConncection().prepareStatement("DELETE FROM productos EHre id=?")) {
+            preparedStatement.setLong(1,id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static Product mapProduct(ResultSet resultSet) throws SQLException {
